@@ -39,7 +39,7 @@ interface Answers {
 }
 
 const getRespondents = () =>
-  axios.get<Data[]>('http://localhost:3000/respondents/all')
+  axios.get<Data[]>(`${import.meta.env.VITE_BASE_URL}/respondents/all`)
 
 export const Step1 = () => {
   // const [selectedRows, setSelectedRows] = useState<Data[]>([])
