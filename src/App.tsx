@@ -20,9 +20,3 @@ function App() {
 }
 
 export default App
-
-type A = {
-  b: string
-}
-
-type B = A['b']
