@@ -1,0 +1,28 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+import './App.css'
+
+import { MainPage } from './pages/main'
+import { QuestionProvider } from './questionContext'
+
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <QuestionProvider>
+          <MainPage />
+        </QuestionProvider>
+      </QueryClientProvider>
+    </>
+  )
+}
+
+export default App
+
+type A = {
+  b: string
+}
+
+type B = A['b']
