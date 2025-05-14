@@ -50,7 +50,7 @@ export const MainPage = () => {
         )}
         {current < steps.length - 1 && (
           <Button type='primary' onClick={() => next()}>
-            Дальше
+            Вперед
           </Button>
         )}
         {current === steps.length - 1 && (
