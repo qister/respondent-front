@@ -1,4 +1,4 @@
-import { Alert, Divider, Table, Typography } from 'antd'
+import { Alert, Divider, Table, Typography, type TableColumnsType } from 'antd'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useQuestionContext } from '../questionContext'
@@ -109,12 +109,45 @@ export const Step1 = () => {
     // 'privacy',
   ])
 
-  const columns = Object.keys(respondents?.data?.[0] ?? {})
+  const filters =
+    respondents?.data.reduce((acc, respondent) => {
+      Object.entries(respondent).forEach(([key, value]) => {
+        if (!acc[key]) {
+          acc[key] = [value]
+          return
+        }
+
+        acc[key].push(value)
+      })
+
+      return acc
+    }, {} as Record<string, string[]>) ?? {}
+
+  const columns: TableColumnsType<Data> = Object.keys(
+    respondents?.data?.[0] ?? {},
+  )
     .filter((f) => !hiddenfields.has(f))
     .map((key) => ({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       title: labelMapping[key] ?? key,
       dataIndex: key,
       key: key,
+      filters:
+        [...new Set(filters[key])].map((v) => ({
+          text: v,
+          value: v,
+        })) ?? [],
+      onFilter: (value, record) =>
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-expect-error
+        (record[key] as string).includes(value as string),
+      render:
+        key === 'age'
+          ? (text: string) => (
+              <span style={{ whiteSpace: 'nowrap' }}>{text}</span>
+            )
+          : undefined,
     }))
 
   const data = (respondents?.data ?? []).map((respondent) => ({
@@ -133,15 +166,7 @@ export const Step1 = () => {
             setRespondents(selectedRowKeys as string[])
           },
         }}
-        columns={columns.map((column) => ({
-          ...column,
-          render:
-            column.dataIndex === 'age'
-              ? (text: string) => (
-                  <span style={{ whiteSpace: 'nowrap' }}>{text}</span>
-                )
-              : undefined,
-        }))}
+        columns={columns}
         dataSource={data}
         loading={isLoading}
       />
