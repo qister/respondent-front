@@ -41,10 +41,35 @@ interface Answers {
 const getRespondents = () =>
   axios.get<Data[]>(`${import.meta.env.VITE_BASE_URL}/respondents/all`)
 
+const labelMapping = {
+  gender: 'Пол',
+  name: 'Имя',
+  age: 'Возраст',
+  city: 'Город',
+  education: 'Образование',
+  education_two: 'Дополнительное образование',
+  occupation: 'Занятость',
+  unemployed: 'Причина',
+  period: 'Период',
+  student: 'Статус',
+  student_job: 'Подработка',
+  self_employed: 'Тип предпринимательской деятельности',
+  employment: 'Должность',
+  freelance_employment: 'Специализация',
+  freelance_work: 'Область',
+  field_work: 'Сфера деятельности',
+  income: 'Уровень дохода',
+  job_device: 'Устройство для работы',
+  leisure_device: 'Устройство для контента',
+  research: 'Участие в исследованиях',
+  platform: 'Удобная платформа для связи',
+  time: 'Удобное время для связи',
+}
+
 export const Step1 = () => {
   // const [selectedRows, setSelectedRows] = useState<Data[]>([])
 
-  const {respondents: selectedRowKeys, setRespondents} = useQuestionContext()
+  const { respondents: selectedRowKeys, setRespondents } = useQuestionContext()
 
   // useEffect(() => {
   //   const keys = selectedRows.map((row) => row._id)
@@ -87,7 +112,7 @@ export const Step1 = () => {
   const columns = Object.keys(respondents?.data?.[0] ?? {})
     .filter((f) => !hiddenfields.has(f))
     .map((key) => ({
-      title: key,
+      title: labelMapping[key] ?? key,
       dataIndex: key,
       key: key,
     }))
