@@ -157,7 +157,7 @@ export const Step1 = () => {
 
   return (
     <div style={{ overflowY: 'scroll' }}>
-      <Divider />
+      <Typography.Text>Выбрано: {selectedRowKeys.length}</Typography.Text>
       <Table<Data>
         size='small'
         rowSelection={{
@@ -169,9 +169,9 @@ export const Step1 = () => {
         columns={columns}
         dataSource={data}
         loading={isLoading}
+        pagination={{ position: ['topLeft', 'bottomRight'] }}
       />
       <Divider />
-      <Typography.Text>Выбрано: {selectedRowKeys.length}</Typography.Text>
     </div>
   )
 }
