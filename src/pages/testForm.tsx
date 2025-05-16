@@ -23,7 +23,7 @@ interface Answers {
   [key: number]: string | string[]
 }
 
-const isType = (value: string): value is QuestionType => {
+const isType = (value: string | string[]): value is QuestionType => {
   return (
     value === QuestionType.TEXT ||
     value === QuestionType.SINGLE ||
@@ -146,7 +146,7 @@ const RenderBuilder = ({
   }: {
     id: number
     field: keyof Question
-    value: string
+    value: string | string[]
   }) => void
   updateOption: ({
     id,
@@ -211,19 +211,33 @@ const RenderBuilder = ({
               >
                 <Text>Варианты ответа:</Text>
                 {q.options.map((opt, idx) => (
-                  <Input
-                    key={idx}
-                    type='text'
-                    value={opt}
-                    placeholder={`Вариант ${idx + 1}`}
-                    onChange={(e) =>
-                      updateOption({
-                        id: q.id,
-                        index: idx,
-                        value: e.target.value,
-                      })
-                    }
-                  />
+                  <div style={{ display: 'flex', gap: 10 }} key={idx}>
+                    <Input
+                      key={idx}
+                      type='text'
+                      value={opt}
+                      placeholder={`Вариант ${idx + 1}`}
+                      onChange={(e) =>
+                        updateOption({
+                          id: q.id,
+                          index: idx,
+                          value: e.target.value,
+                        })
+                      }
+                    />
+                    <Button
+                      onClick={() =>
+                        updateQuestion({
+                          id: q.id,
+                          field: 'options',
+                          value: q.options.filter((_, i) => i !== idx),
+                        })
+                      }
+                      danger
+                    >
+                      Удалить вариант
+                    </Button>
+                  </div>
                 ))}
                 <Button onClick={() => addOption(q.id)}>
                   Добавить вариант
@@ -253,8 +267,7 @@ const RenderBuilder = ({
 )
 
 export const FormBuilder: React.FC = () => {
-  // const [questions, setQuestions] = useState<Question[]>([])
-  const {questions, setQuestions} = useQuestionContext()
+  const { questions, setQuestions } = useQuestionContext()
   const [formMode, setFormMode] = useState<boolean>(false)
 
   const addQuestion = () => {
@@ -276,7 +289,7 @@ export const FormBuilder: React.FC = () => {
   }: {
     id: number
     field: keyof Question
-    value: string
+    value: string | string[]
   }) => {
     const newQuestion = questions.find((q) => q.id === id)
     if (newQuestion && field === 'type' && isType(value)) {
