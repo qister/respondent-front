@@ -31,13 +31,7 @@ const isType = (value: string | string[]): value is QuestionType => {
   )
 }
 
-const RenderForm = ({
-  questions,
-  setFormMode,
-}: {
-  questions: Question[]
-  setFormMode: (arg: boolean) => void
-}) => {
+const RenderForm = ({ questions }: { questions: Question[] }) => {
   const [answers, setAnswers] = useState<Answers>({})
 
   const handleChange = (qid: number, value: string) => {
@@ -53,13 +47,9 @@ const RenderForm = ({
     }
   }
 
-  const handleSubmit = () => {
-    console.log('Ответы:', answers)
-  }
-
   return (
     <div>
-      <Title>Форма</Title>
+      <Title level={2}>Анкета</Title>
       {questions.map((q) => (
         <Card key={q.id} style={{ marginBottom: 10 }}>
           <Text>{q.text}</Text>
@@ -70,60 +60,28 @@ const RenderForm = ({
                 onChange={(e) => handleChange(q.id, e.target.value)}
               />
             )}
-            {
-              q.type === QuestionType.SINGLE && (
-                <Radio.Group
-                  options={q.options.map((opt) => ({
-                    label: opt,
-                    value: opt,
-                  }))}
-                  onChange={(e) => handleChange(q.id, e.target.value)} // в целом для создания вопросов onChange не нужен
-                  // value={answers[q.id] as string}
-                />
-              )
-              // q.options.map((opt, idx) => (
-              //   <div key={idx}>
-              //     <Checkbox
-              //       type='radio'
-              //       name={`single-${q.id}`}
-              //       value={opt}
-              //       onChange={(e) => handleChange(q.id, e.target.value)}
-              //     >
-              //       {opt}
-              //     </Checkbox>
-              //   </div>
-              // ))
-            }
-            {
-              q.type === QuestionType.MULTI && (
-                <Checkbox.Group
-                  options={q.options.map((opt) => ({
-                    label: opt,
-                    value: opt,
-                  }))}
-                  defaultValue={['Apple']}
-                  onChange={(v) => handleMultiChange(q.id, v[0] as string)} // тут вопросик
-                />
-              )
-              // q.options.map((opt, idx) => (
-              //   <div key={idx}>
-
-              //     <label>
-              //       <input
-              //         type='checkbox'
-              //         value={opt}
-              //         onChange={() => handleMultiChange(q.id, opt)}
-              //       />
-              //       {opt}
-              //     </label>
-              //   </div>
-              // ))
-            }
+            {q.type === QuestionType.SINGLE && (
+              <Radio.Group
+                options={q.options.map((opt) => ({
+                  label: opt,
+                  value: opt,
+                }))}
+                onChange={(e) => handleChange(q.id, e.target.value)} // в целом для создания вопросов onChange не нужен
+              />
+            )}
+            {q.type === QuestionType.MULTI && (
+              <Checkbox.Group
+                options={q.options.map((opt) => ({
+                  label: opt,
+                  value: opt,
+                }))}
+                defaultValue={['Apple']}
+                onChange={(v) => handleMultiChange(q.id, v[0] as string)} // тут вопросик
+              />
+            )}
           </div>
         </Card>
       ))}
-      <Button onClick={handleSubmit}>Отправить</Button>
-      <Button onClick={() => setFormMode(false)}>Назад</Button>
     </div>
   )
 }
@@ -135,7 +93,6 @@ const RenderBuilder = ({
   updateOption,
   addOption,
   removeQuestion,
-  setFormMode,
 }: {
   questions: Question[]
   addQuestion: () => void
@@ -159,7 +116,6 @@ const RenderBuilder = ({
   }) => void
   addOption: (qid: number) => void
   removeQuestion: (id: number) => void
-  setFormMode: (arg: boolean) => void
 }) => (
   <div>
     <Title level={2}>Создайте анкету, добавляя вопросы</Title>
@@ -260,7 +216,6 @@ const RenderBuilder = ({
         }}
       >
         <Button onClick={addQuestion}>Добавить вопрос</Button>
-        <Button onClick={() => setFormMode(true)}>Предпросмотр</Button>
       </div>
     </div>
   </div>
@@ -268,7 +223,6 @@ const RenderBuilder = ({
 
 export const FormBuilder: React.FC = () => {
   const { questions, setQuestions } = useQuestionContext()
-  const [formMode, setFormMode] = useState<boolean>(false)
 
   const addQuestion = () => {
     setQuestions([
@@ -345,20 +299,24 @@ export const FormBuilder: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      {formMode ? (
-        <RenderForm questions={questions} setFormMode={setFormMode} />
-      ) : (
-        <RenderBuilder
-          questions={questions}
-          addQuestion={addQuestion}
-          updateQuestion={updateQuestion}
-          updateOption={updateOption}
-          addOption={addOption}
-          removeQuestion={removeQuestion}
-          setFormMode={setFormMode}
-        />
-      )}
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '2fr 1fr',
+        padding: 20,
+        gap: 20,
+      }}
+    >
+      <RenderBuilder
+        questions={questions}
+        addQuestion={addQuestion}
+        updateQuestion={updateQuestion}
+        updateOption={updateOption}
+        addOption={addOption}
+        removeQuestion={removeQuestion}
+      />
+
+      <RenderForm questions={questions} />
     </div>
   )
 }
