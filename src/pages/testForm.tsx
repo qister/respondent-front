@@ -62,6 +62,7 @@ const RenderForm = ({ questions }: { questions: Question[] }) => {
             )}
             {q.type === QuestionType.SINGLE && (
               <Radio.Group
+                style={{ display: 'flex', gap: 10, flexDirection: 'column' }}
                 options={q.options.map((opt) => ({
                   label: opt,
                   value: opt,
@@ -71,6 +72,7 @@ const RenderForm = ({ questions }: { questions: Question[] }) => {
             )}
             {q.type === QuestionType.MULTI && (
               <Checkbox.Group
+                style={{ display: 'flex', gap: 10, flexDirection: 'column' }}
                 options={q.options.map((opt) => ({
                   label: opt,
                   value: opt,
