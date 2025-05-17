@@ -1,23 +1,27 @@
-import { Form, Input } from 'antd'
+import { Card, Form, Input, Typography } from 'antd'
 import { useQuestionContext } from '../questionContext'
+
+const style = { textAlign: 'start' } as const
 
 export const Step3 = () => {
   const [form] = Form.useForm()
 
   const { setResearchDescrition, researchDescrition } = useQuestionContext()
 
+  const { research_name, date, payment, description, format, duration } =
+    Form.useWatch([], form) ?? {}
+
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        display: 'grid',
+        gridTemplateColumns: '2fr 1fr',
+        gap: 20,
       }}
     >
       <Form
         form={form}
         name='control-hooks'
-        style={{ flex: 0.5 }}
         layout='vertical'
         onFieldsChange={() => {
           setResearchDescrition(form.getFieldsValue())
@@ -42,18 +46,27 @@ export const Step3 = () => {
         <Form.Item name='duration' label='Продолжительность'>
           <Input placeholder='90 минут' />
         </Form.Item>
-
-        {/* <Form.Item>
-          <Space>
-            <Button type='primary' htmlType='submit'>
-              Submit
-            </Button>
-            <Button htmlType='button' onClick={onReset}>
-              Reset
-            </Button>
-          </Space>
-        </Form.Item> */}
       </Form>
+      <Card style={{ height: 'fit-content' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'start',
+          }}
+        >
+          <Typography.Text style={style}>{research_name}</Typography.Text>
+          <Typography.Text style={style}>Дата: {date}</Typography.Text>
+          <Typography.Text style={style}>Оплата: {payment}</Typography.Text>
+          <Typography.Text style={style}>
+            Описание: {description}
+          </Typography.Text>
+          <Typography.Text style={style}>Формат: {format}</Typography.Text>
+          <Typography.Text style={style}>
+            Продолжительность: {duration}
+          </Typography.Text>
+        </div>
+      </Card>
     </div>
   )
 }
