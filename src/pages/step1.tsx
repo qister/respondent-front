@@ -39,7 +39,7 @@ interface Answers {
 }
 
 const getRespondents = () =>
-  axios.get<Data[]>(`${import.meta.env.VITE_BASE_URL}/respondents/all`)
+  axios.get<Data[]>(`${import.meta.env.VITE_BASE_URL}/respondents`)
 
 const labelMapping = {
   gender: 'Пол',
